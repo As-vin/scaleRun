@@ -1,6 +1,5 @@
 import Foundation
 import CloudKit
-import SwiftData
 
 /// CloudKit 同步服务 - 双人热量共享
 class CloudKitSyncService {
@@ -26,9 +25,12 @@ class CloudKitSyncService {
         return share
     }
 
-    /// 接受邀请
+    /// 接受邀请（通过 URL）
     func acceptShare(url: URL) async throws {
-        _ = try await container.acceptShareInvitations(from: [url])
+        let (_, error) = await container.acceptShareInvitations(with: [url])
+        if let error = error {
+            throw error
+        }
     }
 
     // MARK: - 数据同步
@@ -50,7 +52,8 @@ class CloudKitSyncService {
         query.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
 
         let results = try await container.privateCloudDatabase.records(matching: query)
-        guard let record = results.matchResults.first?.1.recordValue else { return nil }
+        guard let (_, result) = results.matchResults.first,
+              let record = try? result.get() else { return nil }
         return record["calories"] as? Double
     }
 }
