@@ -31,9 +31,10 @@ targets:
     type: application
     platform: iOS
     sources:
-      - path: ScaleRun
+      - path: .
         excludes:
           - "Widgets/**"
+          - "project.yml"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.scalerun.health
@@ -59,7 +60,7 @@ targets:
     type: app-extension
     platform: iOS
     sources:
-      - path: ScaleRun/Widgets
+      - path: Widgets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.scalerun.health.Widgets
