@@ -80,7 +80,7 @@ struct GoalSettingView: View {
 }
 
 /// 带步进器的数值行
-private struct StepperValueRow: View {
+struct StepperValueRow: View {
     let title: String
     @Binding var value: Double
     let unit: String
