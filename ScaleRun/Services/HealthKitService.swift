@@ -29,7 +29,7 @@ class HealthKitService {
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date())
         let store = healthStore
 
-        return await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             let query = HKStatisticsQuery(
                 quantityType: stepType,
                 quantitySamplePredicate: predicate,
@@ -55,7 +55,7 @@ class HealthKitService {
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date())
         let store = healthStore
 
-        return await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             let query = HKStatisticsQuery(
                 quantityType: energyType,
                 quantitySamplePredicate: predicate,
