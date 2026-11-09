@@ -1,0 +1,96 @@
+name: Build & Export iOS App
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:  # 支持手动触发
+
+jobs:
+  build:
+    name: Build iOS App
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.1.app
+          xcodebuild -version
+
+      - name: Create Xcode project from sources
+        run: |
+          # 使用 xcodegen 从 project.yml 生成 Xcode 项目
+          brew install xcodegen
+          cd ScaleRun
+          xcodegen generate
+
+      - name: Build for Simulator (验证编译)
+        run: |
+          cd ScaleRun
+          xcodebuild build \
+            -project ScaleRun.xcodeproj \
+            -scheme ScaleRun \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.1' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty || exit 1
+
+      - name: Archive for device
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          cd ScaleRun
+          xcodebuild archive \
+            -project ScaleRun.xcodeproj \
+            -scheme ScaleRun \
+            -destination 'generic/platform=iOS' \
+            -archivePath $PWD/build/ScaleRun.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            | xcpretty || exit 1
+
+      - name: Export IPA (无签名)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          cd ScaleRun
+          # 创建 ExportOptions（Ad-Hoc 无签名模式，仅用于测试）
+          cat > ExportOptions.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>ad-hoc</string>
+              <key>compileBitcode</key>
+              <false/>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath build/ScaleRun.xcarchive \
+            -exportPath build/export \
+            -exportOptionsPlist ExportOptions.plist \
+            || echo "Export failed (expected without signing certificate)"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ScaleRun-Build
+          path: |
+            ScaleRun/build/ScaleRun.xcarchive
+            ScaleRun/build/export/
+          retention-days: 14
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: |
+            *.log
+          retention-days: 7

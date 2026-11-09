@@ -1,0 +1,28 @@
+# Xcode
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+*.xcscmblueprint
+*.xccheckout
+
+# Build
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# CocoaPods / SPM
+Pods/
+.carthage
+.build/
+Package.resolved
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# Secrets
+*.p12
+*.mobileprovision
+*.cert
