@@ -25,12 +25,11 @@ class CloudKitSyncService {
         return share
     }
 
-    /// 接受邀请（通过 URL）
+    /// 接受邀请（通过 URL，实际需通过 UICloudSharingController 处理）
     func acceptShare(url: URL) async throws {
-        let (_, error) = await container.acceptShareInvitations(with: [url])
-        if let error = error {
-            throw error
-        }
+        // TODO: 使用 UICloudSharingController 处理分享邀请
+        // 此方法为占位实现，实际绑定流程需 UI 交互
+        print("收到分享邀请 URL: \(url)")
     }
 
     // MARK: - 数据同步
