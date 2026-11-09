@@ -259,10 +259,11 @@ struct AddMealView: View {
 
         // 查找或创建当天的餐次记录
         let today = Date()
+        let mealTypeRaw = selectedMealType.rawValue
         let existingMeal = try? context.fetch(
             FetchDescriptor<MealRecord>(
                 predicate: #Predicate { meal in
-                    meal.mealTypeRaw == selectedMealType.rawValue
+                    meal.mealTypeRaw == mealTypeRaw
                 }
             )
         ).first { Calendar.current.isDate($0.date, inSameDayAs: today) }

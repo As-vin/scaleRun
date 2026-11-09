@@ -26,15 +26,24 @@ class HealthKitService {
 
         let stepType = HKQuantityType(.stepCount)
         let startOfDay = Calendar.current.startOfDay(for: Date())
-
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date())
-        let descriptor = HKStatisticsQueryDescriptor(
-            predicate: predicate,
-            options: .cumulativeSum
-        )
+        let store = healthStore
 
-        let result = try await descriptor.result(for: healthStore)
-        return Int(result?.sumQuantity()?.doubleValue(for: .count()) ?? 0)
+        return await withCheckedContinuation { continuation in
+            let query = HKStatisticsQuery(
+                quantityType: stepType,
+                quantitySamplePredicate: predicate,
+                options: .cumulativeSum
+            ) { _, result, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    let steps = Int(result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0)
+                    continuation.resume(returning: steps)
+                }
+            }
+            store.execute(query)
+        }
     }
 
     /// 获取今日运动消耗（kcal）
@@ -43,15 +52,24 @@ class HealthKitService {
 
         let energyType = HKQuantityType(.activeEnergyBurned)
         let startOfDay = Calendar.current.startOfDay(for: Date())
-
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: Date())
-        let descriptor = HKStatisticsQueryDescriptor(
-            predicate: predicate,
-            options: .cumulativeSum
-        )
+        let store = healthStore
 
-        let result = try await descriptor.result(for: healthStore)
-        return result?.sumQuantity()?.doubleValue(for: .kilocalorie()) ?? 0
+        return await withCheckedContinuation { continuation in
+            let query = HKStatisticsQuery(
+                quantityType: energyType,
+                quantitySamplePredicate: predicate,
+                options: .cumulativeSum
+            ) { _, result, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    let energy = result?.sumQuantity()?.doubleValue(for: HKUnit.kilocalorie()) ?? 0
+                    continuation.resume(returning: energy)
+                }
+            }
+            store.execute(query)
+        }
     }
 
     /// 步数换算热量

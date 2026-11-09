@@ -67,11 +67,11 @@ struct GoalSettingView: View {
             profile.targetWeight = targetWeight
         } else {
             let profile = UserProfile(
+                targetWeight: targetWeight,
                 dailyCalorieGoal: dailyCalorie,
                 dailyCarbGoal: dailyCarb,
                 dailyProteinGoal: dailyProtein,
-                dailyFatGoal: dailyFat,
-                targetWeight: targetWeight
+                dailyFatGoal: dailyFat
             )
             context.insert(profile)
         }

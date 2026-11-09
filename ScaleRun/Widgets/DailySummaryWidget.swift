@@ -30,47 +30,48 @@ struct DailySummaryWidgetView: View {
     let entry: DailySummaryEntry
 
     var body: some View {
-        ZStack {
-            // 圆环
+        VStack(spacing: 8) {
             ZStack {
-                Circle()
-                    .stroke(Color.brandPrimary.opacity(0.1), lineWidth: 10)
+                // 圆环
+                ZStack {
+                    Circle()
+                        .stroke(Color.brandPrimary.opacity(0.1), lineWidth: 10)
 
-                Circle()
-                    .trim(from: 0, to: entry.progress)
-                    .stroke(Color.brandGradient, style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+                    Circle()
+                        .trim(from: 0, to: entry.progress)
+                        .stroke(Color.brandGradient, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                }
+                .frame(width: 100, height: 100)
+
+                VStack(spacing: 2) {
+                    Text("\(Int(entry.goal - entry.intake))")
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                    Text("剩余")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.secondary)
+                }
             }
-            .frame(width: 100, height: 100)
 
-            VStack(spacing: 2) {
-                Text("\(Int(entry.goal - entry.intake))")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                Text("剩余")
-                    .font(.system(size: 10))
+            VStack(alignment: .leading, spacing: 6) {
+                Text("今日摄入")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
+
+                Text("\(Int(entry.intake)) / \(Int(entry.goal))")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+
+                Text("kcal")
+                    .font(.system(size: 11))
                     .foregroundStyle(.secondary)
             }
+
+            Text("秤秤快跑")
+                .font(.system(size: 10))
+                .foregroundStyle(.tertiary)
         }
-
-        VStack(alignment: .leading, spacing: 6) {
-            Text("今日摄入")
-                .font(.system(size: 12))
-                .foregroundStyle(.secondary)
-
-            Text("\(Int(entry.intake)) / \(Int(entry.goal))")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
-
-            Text("kcal")
-                .font(.system(size: 11))
-                .foregroundStyle(.secondary)
-        }
-
-        Text("秤秤快跑")
-            .font(.system(size: 10))
-            .foregroundStyle(.tertiary)
-    }
-    .padding(16)
-    .containerBackground(.fill.tertiary, for: .widget)
+        .padding(16)
+        .containerBackground(.fill.tertiary, for: .widget)
 }
 
 struct DailySummaryWidget: Widget {

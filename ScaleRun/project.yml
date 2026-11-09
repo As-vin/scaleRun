@@ -61,6 +61,7 @@ targets:
     platform: iOS
     sources:
       - path: Widgets
+      - path: Extensions/Color+Theme.swift
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.scalerun.health.Widgets
