@@ -6,7 +6,7 @@ struct DashboardView: View {
     @Environment(\.modelContext) private var context
     @Query private var profiles: [UserProfile]
     @Query private var meals: [MealRecord]
-    @Query(sort: [SortDescriptor(\.startDate, order: .reverse)]) private var fastingSessions: [FastingSession]
+    @Query(sort: [SortDescriptor<FastingSession>(\.startDate, order: .reverse)]) private var fastingSessions: [FastingSession]
 
     @State private var selectedDate: Date = Date()
     @State private var weekDates: [Date] = Date.currentWeekDates()

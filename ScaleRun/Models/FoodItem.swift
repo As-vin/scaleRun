@@ -15,7 +15,6 @@ final class FoodItem {
     var stickerName: String     // 贴纸资源名
     var createdAt: Date
 
-    @Relationship(inverse: \MealRecord.foodItems)
     var mealRecord: MealRecord?
 
     init(
