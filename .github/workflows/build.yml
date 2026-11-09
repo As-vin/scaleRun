@@ -22,9 +22,6 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_16.1.app
           xcodebuild -version
 
-      - name: List available simulators
-        run: xcrun simctl list devices available | grep iPhone
-
       - name: Create Xcode project from sources
         run: |
           brew install xcodegen
@@ -37,7 +34,7 @@ jobs:
           xcodebuild build \
             -project ScaleRun.xcodeproj \
             -scheme ScaleRun \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             -quiet
