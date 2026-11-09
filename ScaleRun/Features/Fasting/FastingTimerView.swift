@@ -4,7 +4,7 @@ import SwiftData
 /// 轻断食计时器页面
 struct FastingTimerView: View {
     @Environment(\.modelContext) private var context
-    @Query(sort: \FastingSession.startDate, order: .reverse) private var sessions: [FastingSession]
+    @Query(sort: [SortDescriptor(\.startDate, order: .reverse)]) private var sessions: [FastingSession]
 
     @State private var selectedPlan: String = "16:8"
     @State private var isFasting = false

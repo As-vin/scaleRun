@@ -50,7 +50,9 @@ targets:
             - iCloud.com.scalerun.health
       appGroups:
         - group.com.scalerun.health
-    dependencies: []
+    dependencies:
+      - sdk: Charts.framework
+        status: required
 
   # Widget Extension Target
   ScaleRunWidgets:
@@ -64,6 +66,8 @@ targets:
         CODE_SIGN_STYLE: Manual
     dependencies:
       - target: ScaleRun
+      - sdk: WidgetKit.framework
+        status: required
 
 schemes:
   ScaleRun:
